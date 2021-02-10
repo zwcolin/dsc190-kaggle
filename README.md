@@ -8,9 +8,9 @@ Private Score: Unknown
 Current Ranking: 1  
 
 ### Reference Benchmark for SP20 Challenge
-Public Score: 86.41
-Private Score: 76.27
-Ranking (not counted toward actual competition): 1
+Public Score: 86.41  
+Private Score: 76.27  
+Ranking (not counted toward actual competition): 1  
 
 ## Instructions
 To run the script:
