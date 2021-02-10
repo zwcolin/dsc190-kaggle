@@ -1,4 +1,6 @@
-# DSC190 WI2021 Kaggle Competition (Data Mining Challenge)
+# DSC190 WI21 Data Mining Challenge
+
+[Website](https://www.kaggle.com/c/ucsd-dsc190-wi21-introduction-to-data-mining/overview)
 
 ## Benchmarks
 Public Score: 83.99  
