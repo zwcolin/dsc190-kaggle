@@ -17,7 +17,7 @@ def get_dataset(X_train, y_train, X_val, y_val):
     return (train, val)
 
 def train(params, train, val):
-    model = lgbm.train(params, train, valid_sets=val)
+    model = lgbm.train(params, train, verbose_eval=50000, early_stopping_rounds= 2000,valid_sets=val)
     return model
 
 def predict(model, X_test):
