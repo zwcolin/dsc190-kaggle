@@ -133,7 +133,7 @@ def text_clean(df):
     whitelist = set('abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ<>')
     text_features = df[['name',  'description', 'neighborhood_overview', 'notes', 
     'transit', 'access', 'interaction', 'house_rules', 'host_about']]\
-        .fillna('<unk>').apply(lambda se: se.apply(lambda s: s.lower().replace('/', ' ')))
+        .fillna('<unk>').apply(lambda se: se.apply(lambda s: s.replace('/', ' ')))
     text_features = text_features.apply(lambda se: se.apply(\
         lambda s: ''.join(filter(whitelist.__contains__, s))))
     return text_features

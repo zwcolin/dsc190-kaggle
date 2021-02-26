@@ -1,12 +1,15 @@
 import numpy as np
 import pandas as pd
+import spacy
+import mapply
 from tqdm import tqdm
-from fancyimpute import (KNN, 
-                        NuclearNormMinimization, 
-                        SoftImpute, 
-                        BiScaler, 
-                        # IterativeImputer
-                        )
+# from fancyimpute import (KNN, 
+#                         NuclearNormMinimization, 
+#                         SoftImpute, 
+#                         BiScaler, 
+#                         # IterativeImputer
+#                         )
+from sklearn.experimental import enable_iterative_imputer
 from sklearn.preprocessing import (StandardScaler, 
                                   RobustScaler,
                                   OneHotEncoder,
@@ -15,13 +18,14 @@ from sklearn.preprocessing import (StandardScaler,
 from sklearn.impute import (SimpleImputer,
                             IterativeImputer
                             )
-from sklearn.cluster import KMeans, SpectralClustering, AgglomerativeClustering
-from sklearn.linear_model import TheilSenRegressor, RANSACRegressor, HuberRegressor, \
-ARDRegression, LinearRegression, ElasticNet, ElasticNetCV, PassiveAggressiveRegressor, RidgeClassifier
+from sklearn.cluster import KMeans, AgglomerativeClustering
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-
+from textblob import TextBlob
+from scipy.sparse import csr_matrix
 
 TRAIN_SIZE = 33538
+mapply.init()
 
 def standardization_quant(df, std_mode='standard'):
     train = df[:TRAIN_SIZE,:]
@@ -36,14 +40,6 @@ def impute_quant(data, impute_method='mice', k=5):
     if impute_method=='mice':
         train = data[:TRAIN_SIZE,:]
         return IterativeImputer().fit(train).transform(data)
-    elif impute_method=='soft':
-        X_incomplete_normalized = BiScaler().fit_transform(data)
-        X_filled_softimpute = SoftImpute().fit_transform(X_incomplete_normalized)
-        return X_filled_softimpute
-    elif impute_method=='manual':
-        pass
-    elif impute_method=='knn':
-        return KNN(k).fit_transform(data)
     else:
         raise(NotImplementedError)
 
@@ -76,18 +72,34 @@ def text_transform(text_cleaned, clusters=10, std_mode='standard'):
     text_len = text_cleaned.apply(lambda se: se.apply(lambda s: len(s.split(' ')))).values
     text_quant = np.concatenate([text_na, text_len], axis=1)
     text_quant = standardization_quant(text_quant, std_mode)
-    lst = []
-    ana = SentimentIntensityAnalyzer()
-    for i in tqdm(range(text_cleaned['description'].shape[0])):
-        scores = ana.polarity_scores(text_cleaned['description'][i])
-        lst.append([scores['neg'], scores['neu'], scores['pos']])
-    lst = np.array(lst)
+    nlp = spacy.load("en_core_web_sm")
+    def ner_extraction(s):
+        temp = nlp(s).ents
+        return ' '.join([ent.label_ for ent in temp])
+    # tfidf vectorizer performs worse for some reason
+    entities_listing = text_cleaned['description'].mapply(lambda s: ner_extraction(s))
+    entities_listing = csr_matrix.toarray(CountVectorizer().fit_transform(entities_listing))
+    entities_host = text_cleaned['host_about'].mapply(lambda s: ner_extraction(s))
+    entities_host = csr_matrix.toarray(CountVectorizer().fit_transform(entities_host))
+    def sentiment_analysis(s):
+        ana = SentimentIntensityAnalyzer()
+        vader = ana.polarity_scores(s)
+        blob = TextBlob(s)
+        return [
+                vader['neg'], vader['neu'], vader['pos'], 
+                blob.sentiment.polarity, blob.sentiment.subjectivity,
+            ]
+    lst = np.array(text_cleaned['description'].mapply(lambda s: sentiment_analysis(s)).values.tolist())
     train = lst[:TRAIN_SIZE,:]
-    pd.DataFrame(lst).to_csv('coordianates_text_features.csv', index=False)
     text = KMeans(clusters).fit(train).predict(lst).reshape(-1, 1)
-    # text = AgglomerativeClustering(clusters).fit_predict(lst).reshape(-1, 1)
     text = OneHotEncoder(sparse=False).fit_transform(text)
-    text = np.concatenate([text_quant, text], axis=1)
+
+    text = np.concatenate([
+        text_quant, 
+        entities_listing, 
+        entities_host,
+        text,
+    ], axis=1)
     pd.DataFrame(text).to_csv('saved_text_features.csv', index=False)
     return text
 

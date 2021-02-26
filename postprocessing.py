@@ -40,4 +40,3 @@ def execute(include_price=True):
 	print(f'success - please submit {fname} for Kaggle evaluation')
 
 	return
-

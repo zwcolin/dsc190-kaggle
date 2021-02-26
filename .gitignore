@@ -130,3 +130,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+train.csv
+test.csv
+saved_text_features.csv
+data/29041.csv
+data/36124.csv
+data/59523.csv
+coordianates_text_features.csv

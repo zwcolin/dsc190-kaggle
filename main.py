@@ -24,6 +24,7 @@ TEXT_CLUSTERS = 20 # 15
 
 
 def main():
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
     if not osp.exists('data'): os.makrdirs('data')
     print('reading and parsing raw data...', end='')
     train_df = pd.read_csv("train.csv", low_memory=False)
@@ -113,7 +114,8 @@ def main():
         filename = osp.join('data', f'{serial}.csv')
         filename = write_csv(test_df, y_pred, filename=filename) #serial here
         print(f'inference for test data finished, predictions stored as {filename}')
-    pd.DataFrame(SERIALS).to_csv(osp.join('data', 'serials.csv'))
+    FSERIALS = ['best'] + SERIALS
+    pd.DataFrame(FSERIALS).to_csv(osp.join('data', 'serials.csv'))
     print('start postprocessing...', end='')
     execute(not PRE_PRICE)
 
