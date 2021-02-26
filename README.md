@@ -8,8 +8,8 @@ Private Score: Unknown
 Ranking: 1  
 
 ### Reference Benchmark for SP20 Challenge
-Public Score: 86.01  
-Private Score: 75.76  
+Public Score: 85.83 (0.71 ↓)  
+Private Score: 75.57 (0.8 ↓)
 Ranking (not counted toward actual competition): 1  
 
 ## Instructions
