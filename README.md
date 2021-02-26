@@ -26,6 +26,21 @@ python main.py
 ## Several Good Seeds that Overfit to Test Set
 `59523`, `97321`, `20616`, `36124`, `29041`, `55931`, `34549`
 
+## Reproducibility
+- Use the good seeds in original code
+- Run the model and make the submission
+- Usually, the score should be similar to my actual score. Sometimes you need more runs when you have bad luck :( even if validation error looks similar.
+
+### Hardware & Software Settings
+
+CPU: AMD R9-3900X 12 Core 24 Threads  
+GPU: NVIDIA RTX 3900 (did not use for training)  
+Memory: 32 Gb 3200 Mhz  
+
+Python: 3.8  
+CUDA: 11.0  
+Numpy Optimization: Intel MKL  
+
 ## Dependency Requirements
 ```
 - numpy 1.20
