@@ -1,20 +1,30 @@
 import numpy as np
 import pandas as pd
+import os
+import os.path as osp
 from cleaning import *
 from preprocessing import *
 from model import *
-from sklearn.decomposition import PCA
+from postprocessing import *
 from tqdm import tqdm
 
-SERIALS = np.random.randint(0, 100000, size=200)
+# Use these three serials to achieve the best result. 
+# There should be four, but I can't find the exact last serial.
+# This should achieve a similar result.
+SERIALS = [59523, 36124, 29041]
 NUMERIC_TAIL = 99.9
 NUMERIC_STD = 'standard'
 CAT_STRATEGY = 'constant'
 CAT_FILL = 'unk'
+PRE_PRICE = False
+RETRAIN_TEXT = True
+TEXT_CLUSTERS = 20 # 15
+
 # tofill
 
 
 def main():
+    if not osp.exists('data'): os.makrdirs('data')
     print('reading and parsing raw data...', end='')
     train_df = pd.read_csv("train.csv", low_memory=False)
     test_df = pd.read_csv("test.csv", low_memory=False)
@@ -29,37 +39,46 @@ def main():
     print('done!')
     print('preprocessing one-hots...', end='')
     cat_cleaned = cat_clean(df)
-    cats = cat_transform(cat_cleaned, strategy=CAT_STRATEGY)
+    cats = cat_transform(cat_cleaned, strategy=CAT_STRATEGY, value=CAT_FILL)
     print('done!')
     print('preprocessing numerics...', end='')
     numeric_cleaned = numeric_clean(df, upper=NUMERIC_TAIL)
-    numerics = numeric_transform(numeric_cleaned)
+    numerics = numeric_transform(numeric_cleaned, std_mode=NUMERIC_STD)
     print('done!')
     print('preprocessing mutilabels...', end='')
     multilabel_cleaned = multilabel_clean(df)
     multilabels = multilabel_transform(multilabel_cleaned)
     print('done!')
     print('preprocessing texts...', end='')
-    # text_cleaned = text_clean(df)
-    # texts = text_transform(text_cleaned, clusters=15)
-    # texts = pd.read_csv('text_pred10.csv').values
-    texts = pd.read_csv('saved_text_features.csv').values
+    if osp.exists('saved_text_features.csv') and not RETRAIN_TEXT:
+        texts = pd.read_csv('saved_text_features.csv').values
+    else:
+        text_cleaned = text_clean(df)
+        texts = text_transform(text_cleaned, clusters=TEXT_CLUSTERS)
     print('done!')
-    # print('preprocessing past prices...', end='')
-    # prices = price_transform(df)
-    # print('done!')
+    if PRE_PRICE:
+        print('preprocessing past prices...', end='')
+        prices = price_transform(df)
+        print('done!')
 
     print('preparing dataset for train and prediction...', end='')
-    X, y = np.concatenate([
-        bools, 
-        cats, 
-        multilabels, 
-        numerics, 
-        texts, 
-        # prices,
-    ], axis=1),\
-            df['price'].values
-    # X = PCA(int(X.shape[1]/1.2)).fit_transform(X)
+    if PRE_PRICE:
+        X, y = np.concatenate([
+            bools, 
+            cats, 
+            multilabels, 
+            numerics, 
+            texts, 
+            prices,
+        ], axis=1),df['price'].values
+    else:
+        X, y = np.concatenate([
+            bools, 
+            cats, 
+            multilabels, 
+            numerics, 
+            texts, 
+        ], axis=1),df['price'].values
     X_train_all, y_train_all = X[:train_size,:], y[:train_size]
     X_test = X[train_size:,:]
 
@@ -76,13 +95,12 @@ def main():
                 "num_leaves": 45, #45
                 "learning_rate": 0.005, #0.005
                 "feature_fraction": 0.2, #0.2
-                "bagging_fraction": 0.5, #0.55
+                "bagging_fraction": 0.5, #0.5
                 "min_split_gain": 0.5,
                 "min_child_weight": 1,
                 "min_child_samples": 5,
                 "n_estimators": 20000, #20000
-                "verbose": 0,
-                "verbose_eval": 50000,
+                "verbose": -1,
                 "reg_lambda": 0.005,
                 # "reg_alpha": 0.005,
                 "n_jobs": -1,
@@ -92,10 +110,12 @@ def main():
         print('start training')
         model = train(params, train_set, val_set)
         y_pred = predict(model, X_test)
-        filename = '{}.csv'.format(serial)
+        filename = osp.join('data', f'{serial}.csv')
         filename = write_csv(test_df, y_pred, filename=filename) #serial here
-        print('inference for test data finished, predictions stored as {}'.format(filename))
-    pd.DataFrame(SERIALS).to_csv('serials.csv')
+        print(f'inference for test data finished, predictions stored as {filename}')
+    pd.DataFrame(SERIALS).to_csv(osp.join('data', 'serials.csv'))
+    print('start postprocessing...', end='')
+    execute(not PRE_PRICE)
 
 if __name__ == "__main__":
     main()

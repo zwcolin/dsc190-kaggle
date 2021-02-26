@@ -5,7 +5,7 @@ from fancyimpute import (KNN,
                         NuclearNormMinimization, 
                         SoftImpute, 
                         BiScaler, 
-                        IterativeImputer
+                        # IterativeImputer
                         )
 from sklearn.preprocessing import (StandardScaler, 
                                   RobustScaler,
@@ -13,9 +13,9 @@ from sklearn.preprocessing import (StandardScaler,
                                   MultiLabelBinarizer
                                   )
 from sklearn.impute import (SimpleImputer,
-                            # IterativeImputer
+                            IterativeImputer
                             )
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, SpectralClustering, AgglomerativeClustering
 from sklearn.linear_model import TheilSenRegressor, RANSACRegressor, HuberRegressor, \
 ARDRegression, LinearRegression, ElasticNet, ElasticNetCV, PassiveAggressiveRegressor, RidgeClassifier
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -28,7 +28,7 @@ def standardization_quant(df, std_mode='standard'):
     if std_mode=='standard':
         return StandardScaler().fit(train).transform(df)
     elif std_mode=='robust':
-        return StandardScaler().fit(train).transform(df)
+        return RobustScaler().fit(train).transform(df)
     else:
         raise(NotImplementedError)
 
@@ -59,7 +59,7 @@ def numeric_transform(numeric_cleaned, std_mode='standard',
 
 def cat_transform(cat_cleaned, strategy='constant', value='unk'):
     train = cat_cleaned.iloc[:TRAIN_SIZE,:]
-    cat = SimpleImputer(strategy='constant', fill_value='unk', verbose=1).fit(train).transform(cat_cleaned)
+    cat = SimpleImputer(strategy=strategy, fill_value=value, verbose=1).fit(train).transform(cat_cleaned)
     cat = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(cat[:TRAIN_SIZE,:]).transform(cat)
     return cat
 
@@ -80,13 +80,15 @@ def text_transform(text_cleaned, clusters=10, std_mode='standard'):
     ana = SentimentIntensityAnalyzer()
     for i in tqdm(range(text_cleaned['description'].shape[0])):
         scores = ana.polarity_scores(text_cleaned['description'][i])
-        lst.append([scores['neg'], scores['neu'],scores['pos'],scores['pos']])
+        lst.append([scores['neg'], scores['neu'], scores['pos']])
     lst = np.array(lst)
     train = lst[:TRAIN_SIZE,:]
+    pd.DataFrame(lst).to_csv('coordianates_text_features.csv', index=False)
     text = KMeans(clusters).fit(train).predict(lst).reshape(-1, 1)
+    # text = AgglomerativeClustering(clusters).fit_predict(lst).reshape(-1, 1)
     text = OneHotEncoder(sparse=False).fit_transform(text)
     text = np.concatenate([text_quant, text], axis=1)
-    pd.DataFrame(text).to_csv('saved_text_features.csv')
+    pd.DataFrame(text).to_csv('saved_text_features.csv', index=False)
     return text
 
 def price_transform(df):
