@@ -33,12 +33,13 @@ python main.py
 
 ### Hardware & Software Settings
 
-CPU: AMD R9-3900X 12 Core 24 Threads
-GPU: RTX 3900 (did not use for training)
-Memory: 32 Gb 3200 Mhz
+CPU: AMD R9-3900X 12 Core 24 Threads  
+GPU: NVIDIA RTX 3900 (did not use for training)  
+Memory: 32 Gb 3200 Mhz  
 
-Python: 3.8
-CUDA: 11.0
+Python: 3.8  
+CUDA: 11.0  
+Numpy Optimization: Intel MKL  
 
 ## Dependency Requirements
 ```
