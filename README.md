@@ -3,13 +3,13 @@
 [Website](https://www.kaggle.com/c/ucsd-dsc190-wi21-introduction-to-data-mining/overview)
 
 ## Benchmarks
-Public Score: 83.71  
+Public Score: 83.61  
 Private Score: Unknown  
-Current Ranking: 1  
+Ranking: 1  
 
 ### Reference Benchmark for SP20 Challenge
-Public Score: 86.41  
-Private Score: 76.27  
+Public Score: 86.01  
+Private Score: 75.76  
 Ranking (not counted toward actual competition): 1  
 
 ## Instructions
