@@ -1,6 +1,4 @@
 #
-data/
-*.csv
 *.ipynb
 
 # Byte-compiled / optimized / DLL files
