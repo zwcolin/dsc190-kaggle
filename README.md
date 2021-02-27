@@ -4,7 +4,7 @@
 
 ## Benchmarks
 Public Score: 83.46  
-Private Score: Unknown  
+Private Score: 78.19  
 Ranking: 1  
 
 ## Instructions
@@ -22,9 +22,12 @@ python main.py
 `59523`, `97321`, `20616`, `36124`, `29041`, `55931`, `34549`
 
 ## Reproducibility
-- Use the good seeds in original code
+- One of the best predictions were made in an earlier model, but I couldn't find its configuration
+- Luckily, the prediction file is still available as `data\best.csv`
+- Use the "overfitting" seeds in original code (no need to change anything)
 - Run the model and make the submission
-- Usually, the score should be similar to my actual score. Sometimes you need more runs when you have bad luck :( even if validation error looks similar.
+- Usually, the score should be similar to my actual score. 
+- Sometimes you need more runs when you have bad luck :( even if validation error looks similar.
 
 ### Hardware & Software Settings
 
@@ -39,11 +42,17 @@ Numpy Optimization: Intel MKL
 ## Dependency Requirements
 ```
 - numpy 1.20
+- scipy 1.6.0
 - pandas 1.2.1
 - scikit-learn 0.24.1
 - tqdm 4.56.0
 - lightgbm 3.1.1
-- fancyimpute 0.5.5
 - vadersentiment 3.3.2
+- tensorflow 2.4.0
+- spacy 3.0.3
+- textblob 0.15.3
+- mapply 0.1.7 (optional, for multithreading)
 ```
 
+![image](https://user-images.githubusercontent.com/59942464/109370458-429beb80-7855-11eb-8637-a1b46b5b9ed0.png)
+![image](https://user-images.githubusercontent.com/59942464/109370478-59dad900-7855-11eb-9e61-a90d7fae67d8.png)
