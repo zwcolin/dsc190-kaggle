@@ -1,6 +1,7 @@
 # DSC190 WI21 Data Mining Challenge
 
 [Website](https://www.kaggle.com/c/ucsd-dsc190-wi21-introduction-to-data-mining/overview)
+[Slides](https://docs.google.com/presentation/d/1WxgHtFA0XqmbKwXgYtmNk5FQRq42FbVMjAH-fJgcZMo/edit#slide=id.p)
 
 <img src="https://user-images.githubusercontent.com/59942464/109371716-ffdd1200-785a-11eb-93a9-dba5bfa7a8cd.png" title="Sentiment visualization for 50000+ users from the dataset!" alt="drawing" width="600"/>  
 
