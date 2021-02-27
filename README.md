@@ -2,6 +2,10 @@
 
 [Website](https://www.kaggle.com/c/ucsd-dsc190-wi21-introduction-to-data-mining/overview)
 
+<img src="https://user-images.githubusercontent.com/59942464/109371716-ffdd1200-785a-11eb-93a9-dba5bfa7a8cd.png" title="Sentiment visualization for 50000+ users from the dataset!" alt="drawing" width="600"/>  
+
+*Sentiment visualization for 50000+ users from the dataset*
+
 ## Benchmarks
 Public Score: 83.46  
 Private Score: 78.19  
