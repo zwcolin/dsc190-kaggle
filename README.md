@@ -11,6 +11,7 @@
 Public Score: 83.46  
 Private Score: 78.19  
 Ranking: 1  
+Ranking on Spring 2020's Competition: 1 (Not recorded since it's submitted outside the competition time range)
 
 ## Instructions
 To run the script:
