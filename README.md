@@ -1,5 +1,15 @@
 # DSC190 WI21 Data Mining Challenge
-
+## Reference
+If you are using this pipeline (or part of the pipeline) for future offerings of the same class (or different classes), please cite my implementation accordingly. Uncited works are subject to plagiarism: 
+```
+@misc{airbnbHousingPred,
+  author    = {Colin Wang},
+  title     = {Predicting Airbnb Housing Price with Machine Learning},
+  year      = {2021},
+  url       = {https://github.com/zwcolin/dsc190-kaggle}
+}
+```
+## Introduction
 [Website](https://www.kaggle.com/c/ucsd-dsc190-wi21-introduction-to-data-mining/overview)  
 [Slides](https://docs.google.com/presentation/d/1WxgHtFA0XqmbKwXgYtmNk5FQRq42FbVMjAH-fJgcZMo/edit#slide=id.p)  
 
